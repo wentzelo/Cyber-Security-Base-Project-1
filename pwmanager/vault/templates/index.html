@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Your saved passwords</h1>
+    <p><a href="{% url 'add_entry' %}">Add new entry</a></p>
+    <table border="1" cellpadding="4">
+        <tr><th>Website</th><th>Password</th><th></th></tr>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.site_url }}</td>
+            <td>{{ entry.password }}</td>
+            <td><a href="{% url 'delete_entry' entry.pk %}">Delete</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No entries yet.</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}
