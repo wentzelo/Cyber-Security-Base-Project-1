@@ -45,7 +45,10 @@ def add_entry(request):
 
 @login_required
 def delete_entry(request, pk):
-    entry = get_object_or_404(Entry, pk=pk, owner=request.user)
+    # FLAW (Broken Access Control)
+    # FIX:
+    # entry = get_object_or_404(Entry, pk=pk, owner=request.user)
+    entry = get_object_or_404(Entry, pk=pk)
     if request.method == 'POST':
         entry.delete()
         return redirect('index')
