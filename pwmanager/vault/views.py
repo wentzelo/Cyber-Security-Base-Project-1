@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import EntryForm
-from .models import Entry
+from .models import Entry, encrypt_password, decrypt_password
 
 
 def login_view(request):
@@ -26,6 +26,10 @@ def logout_view(request):
 @login_required
 def index(request):
     entries = Entry.objects.filter(owner=request.user)
+    # FLAW (Cryptographic Failures)
+    # FIX:
+    # for entry in entries:
+    #     entry.password = decrypt_password(entry.password)
     return render(request, 'index.html', {'entries': entries})
 
 
@@ -36,6 +40,8 @@ def add_entry(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.owner = request.user
+            # FIX:
+            # entry.password = encrypt_password(entry.password)
             entry.save()
             return redirect('index')
     else:
