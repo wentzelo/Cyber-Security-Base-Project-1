@@ -7,13 +7,13 @@
 <body>
     <header>
         <h2>Password Manager</h2>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and request.resolver_match.url_name != 'login' %}
             <p>Logged in as {{ user.username }}</p>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit">Log out</button>
             </form>
-        {% else %}
+        {% elif request.resolver_match.url_name != 'login' %}
             <p><a href="{% url 'login' %}">Log in</a></p>
         {% endif %}
     </header>
