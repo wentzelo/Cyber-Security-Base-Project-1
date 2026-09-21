@@ -36,7 +36,7 @@ def index(request):
         # entries = Entry.objects.filter(owner=request.user, site_url__icontains=query)
     else:
         entries = Entry.objects.filter(owner=request.user)
-    # FLAW (Cryptographic Failures)
+    # FLAW (Cryptographic Failures) 1/2
     # FIX:
     # for entry in entries:
     #     entry.password = decrypt_password(entry.password)
@@ -50,6 +50,7 @@ def add_entry(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.owner = request.user
+            # FLAW (Cryptographic Failures) 2/2
             # FIX:
             # entry.password = encrypt_password(entry.password)
             entry.save()
