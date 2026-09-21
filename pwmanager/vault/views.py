@@ -19,7 +19,7 @@ def login_view(request):
 
 
 def logout_view(request):
-    # FLAW (Identification and Authentication Failures)
+    # FLAW 4 (Identification and Authentication Failures)
     # FIX:
     #logout(request)
     return redirect('login')
@@ -29,14 +29,14 @@ def logout_view(request):
 def index(request):
     query = request.GET.get('q', '')
     if query:
-        # FLAW (Injection)
+        # FLAW 3 (Injection)
         sql = "SELECT * FROM vault_entry WHERE owner_id = {} AND site_url LIKE '%{}%'".format(request.user.id, query)
         entries = Entry.objects.raw(sql)
         # FIX:
         # entries = Entry.objects.filter(owner=request.user, site_url__icontains=query)
     else:
         entries = Entry.objects.filter(owner=request.user)
-    # FLAW (Cryptographic Failures)
+    # FLAW 2 (Cryptographic Failures) 1/2
     # FIX:
     # for entry in entries:
     #     entry.password = decrypt_password(entry.password)
@@ -50,6 +50,7 @@ def add_entry(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.owner = request.user
+            # FLAW 2 (Cryptographic Failures) 2/2
             # FIX:
             # entry.password = encrypt_password(entry.password)
             entry.save()
@@ -61,11 +62,11 @@ def add_entry(request):
 
 @login_required
 def delete_entry(request, pk):
-    # FLAW (Broken Access Control)
+    # FLAW 1 (Broken Access Control)
     # FIX:
     # entry = get_object_or_404(Entry, pk=pk, owner=request.user)
     entry = get_object_or_404(Entry, pk=pk)
-    # FLAW (CSRF)
+    # FLAW 5 (CSRF)
     # FIX:
     # if request.method == 'POST':
     #     entry.delete()
