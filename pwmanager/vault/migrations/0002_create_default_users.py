@@ -16,7 +16,7 @@ def create_default_users(apps, schema_editor):
 
 def remove_default_users(apps, schema_editor):
     User = apps.get_model('auth', 'User')
-    User.objects.filter(username__in=['alice', 'bob']).delete()
+    User.objects.filter(username__in=['donald', 'steve']).delete()
 
 
 class Migration(migrations.Migration):

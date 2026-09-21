@@ -65,7 +65,11 @@ def delete_entry(request, pk):
     # FIX:
     # entry = get_object_or_404(Entry, pk=pk, owner=request.user)
     entry = get_object_or_404(Entry, pk=pk)
-    if request.method == 'POST':
-        entry.delete()
-        return redirect('index')
-    return render(request, 'delete_entry.html', {'entry': entry})
+    # FLAW (CSRF)
+    # FIX:
+    # if request.method == 'POST':
+    #     entry.delete()
+    #     return redirect('index')
+    # return render(request, 'delete_entry.html', {'entry': entry})
+    entry.delete()
+    return redirect('index')
