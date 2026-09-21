@@ -25,12 +25,20 @@ def logout_view(request):
 
 @login_required
 def index(request):
-    entries = Entry.objects.filter(owner=request.user)
+    query = request.GET.get('q', '')
+    if query:
+        # FLAW (Injection)
+        sql = "SELECT * FROM vault_entry WHERE owner_id = {} AND site_url LIKE '%{}%'".format(request.user.id, query)
+        entries = Entry.objects.raw(sql)
+        # FIX:
+        # entries = Entry.objects.filter(owner=request.user, site_url__icontains=query)
+    else:
+        entries = Entry.objects.filter(owner=request.user)
     # FLAW (Cryptographic Failures)
     # FIX:
     # for entry in entries:
     #     entry.password = decrypt_password(entry.password)
-    return render(request, 'index.html', {'entries': entries})
+    return render(request, 'index.html', {'entries': entries, 'query': query})
 
 
 @login_required
